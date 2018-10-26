@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd 
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context.xsd 
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+          http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+   <!-- 使用spring提供的PropertyPlaceholderConfigurer读取properties -->
+   <!-- 读取单个配置文件 -->
+   <!--  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">      
+	    <property name="location">  
+	               <value>classpath:application.properties</value>        
+	    </property> 
+    </bean>    -->
+    <!-- 使用spring提供的PropertyPlaceholderConfigurer读取properties -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <!-- 属性名是 locations，使用子标签<list></list>可以指定多个数据库的配置文件，这里指定了一个-->
+    <!-- 其中order属性代表其加载顺序，而ignoreUnresolvablePlaceholders为是否忽略不可解析的 Placeholder，如配置了多个PropertyPlaceholderConfigurer，则需设置为true -->
+        <property name="order" value="1"></property>
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="locations">
+             <list>
+                <value>classpath:application.properties</value>
+            </list>
+        </property>
+    </bean>
+     <!--数据库配置  -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>   
+    <!--  配置扫描的包 -->
+    <context:component-scan base-package="com.springdemo.*" />
+    <!--   配置根视图 在web服务中发送请求需要同后台的requestmapping所匹配，然后再返回页面，但是有时不想走后台，直接请求页面-->
+    <mvc:view-controller path="/demol" view-name="/demol"/>
+    <!-- 注册HandlerMapper、HandlerAdapter两个映射类 -->
+    <mvc:annotation-driven />
+	<!-- 会把 "/**" url,注册到 SimpleUrlHandlerMapping 的 urlMap 中,把对静态资源的访问由 HandlerMapping 转到 org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler 处理并返回.
+	DefaultServletHttpRequestHandler 使用就是各个 Servlet 容器自己的默认 Servlet.
+            访问静态资源 -->
+    <mvc:default-servlet-handler />
+    <!-- 对静态资源文件的访问 -->
+    <!--  <mvc:resources mapping="/images/**" location="/images/" /> -->
+    <!-- 视图解析器 -->
+    <bean
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    
+</beans>

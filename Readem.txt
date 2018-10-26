@@ -1,0 +1,1 @@
+1、Hibernate4.3以上得配合hibernate-jpa-2.1-api
